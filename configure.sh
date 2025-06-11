@@ -4,5 +4,6 @@
 
 pio project init --ide=vim
 pio run -t compiledb
+#curl -s https://anurag3301.com/files/GrDSa.py | python
 #python piopt.py
-curl -s https://anurag3301.com/files/GrDSa.py | python
+python fix_commandcompile.py

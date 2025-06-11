@@ -1,6 +1,6 @@
 import json
-import subprocess
 from pathlib import Path
+import subprocess
 
 # Constants
 PROJECT_ROOT = Path.cwd()

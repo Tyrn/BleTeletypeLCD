@@ -1,0 +1,82 @@
+/*
+  TODO
+
+    [] Create a BLE Device
+      [] Import BLEDevice Library
+      [] Name Device
+      [] Initialize Device
+
+    [] Create Server
+      [] Import BLEServer Library
+      [] Create BLEServer
+
+    [] Create Server Callbacks
+      [] OnConnect
+        [] Turn on LED
+      [] OnDisconnect
+        [] Turn off LED
+
+    [] Create Service
+      [] Define a Service UUID
+      [] Create a Service
+      [] Start the Service
+
+    [] Create Characteristic
+      [] Define a Characteristic UUID
+      [] Create a Characteristic
+      [] Add Characteristic to Service
+
+    [] Create a Characteristic Callback
+      [] Create sub-class to override BLECharacteristicCallbacks
+      [] Send millis value every time request comes in
+
+    [] Create a Descriptor
+      [] Add a Descriptor (2901)
+
+    [] Advertise the Service
+      [] Get the Advertising object from Server
+      [] Set the properties of the Advertisement data
+      [] Set the Advertisement Data to the Service
+      [] Add Service UUID
+      [] Start Advertising
+ */
+
+#include <BLEDevice.h>
+
+#define DEVICE_NAME "BLE Teletype"
+// See https://www.uuidgenerator.net
+#define SERVICE_1_UUID "d9b4049b-c663-446c-9211-71754d930811"
+
+class MyServerCallbacks : public BLEServerCallbacks {
+  void onConnect(BLEServer *pServer) {
+    digitalWrite(2, HIGH);
+    Serial.println("Client Connected");
+  };
+
+  void onDisconnect(BLEServer *pServer) {
+    digitalWrite(2, LOW);
+    Serial.println("Client Disconnected");
+    BLEDevice::startAdvertising();
+  }
+};
+
+void setup() {
+  Serial.begin(9600);
+  Serial.println("ESP32 BLE Server setup beginning...");
+
+  pinMode(2, OUTPUT);
+
+  BLEDevice::init(DEVICE_NAME);
+
+  BLEServer *pServer = BLEDevice::createServer();
+  pServer->setCallbacks(new MyServerCallbacks());
+
+  BLEService *pService = pServer->createService(SERVICE_1_UUID);
+  pService->start();
+
+  BLEDevice::startAdvertising();
+}
+
+void loop() {
+
+}

@@ -42,10 +42,12 @@
  */
 
 #include <BLEDevice.h>
+#include <BLE2901.h>
 
 #define DEVICE_NAME "BLE Teletype"
 // See https://www.uuidgenerator.net
 #define SERVICE_1_UUID "d9b4049b-c663-446c-9211-71754d930811"
+#define CHARACTERISTIC_1A_UUID "596d9fe5-baf0-472b-89ee-bbb3ce27165a"
 
 class MyServerCallbacks : public BLEServerCallbacks {
   void onConnect(BLEServer *pServer) {
@@ -60,6 +62,15 @@ class MyServerCallbacks : public BLEServerCallbacks {
   }
 };
 
+class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
+
+  // On client request
+  void onRead(BLECharacteristic *pCharacteristic) {
+    uint32_t currentMillis = millis() / 1000;
+    pCharacteristic->setValue(currentMillis);
+  }
+}
+
 void setup() {
   Serial.begin(9600);
   Serial.println("ESP32 BLE Server setup beginning...");
@@ -73,6 +84,34 @@ void setup() {
 
   BLEService *pService = pServer->createService(SERVICE_1_UUID);
   pService->start();
+
+  BLECharacteristic *pCharacteristic = pService->createCharacteristic(
+      CHARACTERISTIC_1A_UUID,
+      BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+
+  pCharacteristic->setCallbacks(new MyCharacteristicCallbacks());
+
+  BLE2901 *descriptor_2901 = new BLE2901();
+  descriptor_2901->setDescription("Time");
+  pCharacteristic->addDescriptor(descriptor_2901);
+
+  pService->start();
+
+  // Advertising
+  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+
+  BLEAdvertisementData advertisementData;
+  advertisementData.setName(DEVICE_NAME);
+  advertisementData.setManufacturerData("Chinese Factory");
+
+  BLEAdvertisementData scanResponseData;
+  scanResponseData.setName("Extra Scan Data");
+
+  pAdvertising->setAdvertisementData(advertisementData);
+  pAdvertising->setScanResponseData(scanResponseData);
+
+  pAdvertising->addServiceUUID(SERVICE_1_UUID);
+  pAdvertising->setScanResponse(true);
 
   BLEDevice::startAdvertising();
 }

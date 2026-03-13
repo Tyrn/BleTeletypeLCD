@@ -1,5 +1,8 @@
 #pragma once
 
+// main.cpp must contain #include "this_one",
+// and nothing else.
+
 /*
   TODO
 
@@ -75,7 +78,7 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
 
 // NOLINTBEGIN(misc-definitions-in-headers)
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial.println("ESP32 BLE Server setup beginning...");
 
   pinMode(2, OUTPUT);
@@ -95,11 +98,11 @@ void setup() {
   pCharacteristic->setCallbacks(new MyCharacteristicCallbacks());
 
   // BLE2901 *descriptor_2901 = new BLE2901();
+  // descriptor_2901->setDescription("Time");
+  // pCharacteristic->addDescriptor(descriptor_2901);
   BLEDescriptor *descriptor_2901 = new BLEDescriptor(BLEUUID((uint16_t)0x2901));
   descriptor_2901->setValue("Time");
   pCharacteristic->addDescriptor(descriptor_2901);
-  // descriptor_2901->setDescription("Time");
-  // pCharacteristic->addDescriptor(descriptor_2901);
 
   pService->start();
 

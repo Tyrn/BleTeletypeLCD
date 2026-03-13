@@ -100,11 +100,11 @@ void setup() {
   // Advertising
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
 
-  BLEAdvertisementData advertisementData;
+  BLEAdvertisementData advertisementData;  // For passive scan
   advertisementData.setName(DEVICE_NAME);
   advertisementData.setManufacturerData("Chinese Factory");
 
-  BLEAdvertisementData scanResponseData;
+  BLEAdvertisementData scanResponseData;  // For active scan
   scanResponseData.setName("Extra Scan Data");
 
   pAdvertising->setAdvertisementData(advertisementData);

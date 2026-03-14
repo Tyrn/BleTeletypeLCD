@@ -31,11 +31,3 @@ pio pkg install -p "platformio/espressif32"
 ```
 pio run -t upload
 ```
-
-## Format source
-
-- Via Clang
-
-```
-clang-format -i **/*.(c|cpp|h|hh|hpp|ino)
-```

@@ -101,7 +101,7 @@ void setup() {
   // descriptor_2901->setDescription("Time");
   // pCharacteristic->addDescriptor(descriptor_2901);
   BLEDescriptor *descriptor_2901 = new BLEDescriptor(BLEUUID((uint16_t)0x2901));
-  descriptor_2901->setValue("Time");
+  descriptor_2901->setValue("TimE");
   pCharacteristic->addDescriptor(descriptor_2901);
 
   pService->start();
